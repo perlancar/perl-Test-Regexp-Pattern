@@ -9,6 +9,7 @@ use 5.010001;
 use strict 'subs', 'vars';
 use warnings;
 
+use Regexp::Pattern qw(re);
 use File::Spec;
 use Test::Builder;
 use Test::More ();
@@ -27,7 +28,7 @@ sub import {
 }
 
 sub _test_regexp_pattern {
-    my ($re, $opts) = @_;
+    my ($re, $fqname, $opts) = @_;
     my $ok = 1;
 
   GENERAL: {
@@ -47,14 +48,18 @@ sub _test_regexp_pattern {
                 sub {
                     $Test->ok(defined($eg->{str}), 'example provides string to match') or do {
                         $ok = 0;
-                        next EXAMPLE;
+                        return;
                     };
-                    my $pat;
-                    if ($eg->{gen_args}) {
-                        $pat = $re->{gen}->(%{ $eg->{gen_args} });
-                    } else {
-                        $pat = $re->{pat};
+                    my %args;
+                    for (keys %$opts) {
+                        next unless /\A-/;
+                        $args{$_} = $opts->{$_};
                     }
+                    if ($eg->{gen_args}) {
+                        $args{$_} = $eg->{gen_args}{$_} for keys %{$eg->{gen_args}};
+                    }
+
+                    my $pat = re($fqname, \%args);
                     my $actual_match = $eg->{str} =~ $pat ? 1:0;
                     if (ref $eg->{matches} eq 'ARRAY') {
                         my $len = @{ $eg->{matches} };
@@ -66,7 +71,7 @@ sub _test_regexp_pattern {
                         if ($should_match) {
                             $Test->ok( $actual_match, 'string should match') or do {
                                 $ok = 0;
-                                next EXAMPLE;
+                                return;
                             };
                             Test::More::is_deeply(\@actual_matches, $eg->{matches}, 'matches') or do {
                                   $Test->diag($Test->explain(\@actual_matches));
@@ -75,7 +80,7 @@ sub _test_regexp_pattern {
                         } else {
                             $Test->ok(!$actual_match, 'string should not match') or do {
                                 $ok = 0;
-                                next EXAMPLE;
+                                return;
                             };
                         }
                     } elsif (ref $eg->{matches} eq 'HASH') {
@@ -84,7 +89,7 @@ sub _test_regexp_pattern {
                         if ($should_match) {
                             $Test->ok( $actual_match, 'string should match') or do {
                                 $ok = 0;
-                                next EXAMPLE;
+                                return;
                             };
                             Test::More::is_deeply(\%actual_matches, $eg->{matches}, 'matches') or do {
                                   $Test->diag($Test->explain(\%actual_matches));
@@ -93,19 +98,19 @@ sub _test_regexp_pattern {
                         } else {
                             $Test->ok(!$actual_match, 'string should not match') or do {
                                 $ok = 0;
-                                next EXAMPLE;
+                                return;
                             };
                         }
                     } else {
                         if ($eg->{matches}) {
                             $Test->ok( $actual_match, 'string should match') or do {
                                 $ok = 0;
-                                next EXAMPLE;
+                                return;
                             };
                         } else {
                             $Test->ok(!$actual_match, 'string should not match') or do {
                                 $ok = 0;
-                                next EXAMPLE;
+                                return;
                             };
                         }
                     }
@@ -132,16 +137,25 @@ sub regexp_patterns_in_module_ok {
             (my $modulepm = "$module.pm") =~ s!::!/!g;
             require $modulepm;
 
+            my $prefix = '';
+            if ($module =~ /\ARegexp::Pattern::(.+)/) {
+                $prefix = "$1\::";
+            } else {
+                goto L1;
+            }
+
             for my $name (sort keys %{ "$module\::RE" }) {
                 my $re = ${"$module\::RE"}{$name};
                 $has_tests++;
                 $Test->subtest(
-                    "pattern $name",
+                    "pattern $prefix$name",
                     sub {
-                        _test_regexp_pattern($re, \%opts) or $ok = 0;
+                        _test_regexp_pattern($re, "$prefix$name", \%opts) or $ok = 0;
                     },
                 ) or $ok = 0;
             }
+
+          L1:
             unless ($has_tests) {
                 $Test->ok(1);
                 $Test->diag("No regexp patterns to test");
