@@ -9,7 +9,6 @@ use warnings;
 
 use File::Spec;
 use Test::Builder;
-use Test::More ();
 
 my $Test = Test::Builder->new;
 
@@ -29,9 +28,7 @@ sub _test_regexp_pattern {
     my $ok = 1;
 
   GENERAL: {
-        unless ($re->{pat} xor $re->{gen}) {
-            $Test->ok(0, "Must have pat OR gen but not both") or $ok = 0;
-        }
+        $Test->ok(($re->{pat} xor $re->{gen}), "Must declare pat OR gen but not both") or $ok = 0;
     }
 
   EXAMPLES: {
@@ -45,7 +42,7 @@ sub _test_regexp_pattern {
                     ($eg->{name} ? " ($eg->{name})" :
                      ($eg->{summary} ? " ($eg->{summary})" : "")),
                 sub {
-                    $Test->ok(defined($eg->{str}), 'No string to match') or do {
+                    $Test->ok(defined($eg->{str}), 'example provides string to match') or do {
                         $ok = 0;
                         next EXAMPLE;
                     };
@@ -68,9 +65,8 @@ sub _test_regexp_pattern {
                                 $ok = 0;
                                 next EXAMPLE;
                             };
-                            $Test->is_deeply(\@actual_matches, $eg->{matches}, 'matches') or do {
-                                  Test::More::diag(
-                                      Test::More::explain(\@actual_matches));
+                            Test::More::is_deeply(\@actual_matches, $eg->{matches}, 'matches') or do {
+                                  $Test->diag($Test->explain(\@actual_matches));
                                   $ok = 0;
                               };
                         } else {
@@ -87,9 +83,8 @@ sub _test_regexp_pattern {
                                 $ok = 0;
                                 next EXAMPLE;
                             };
-                            $Test->is_deeply(\%actual_matches, $eg->{matches}, 'matches') or do {
-                                  Test::More::diag(
-                                      Test::More::explain(\%actual_matches));
+                            Test::More::is_deeply(\%actual_matches, $eg->{matches}, 'matches') or do {
+                                  $Test->diag($Test->explain(\%actual_matches));
                                   $ok = 0;
                               };
                         } else {
@@ -137,15 +132,19 @@ sub regexp_patterns_in_module_ok {
             for my $name (sort keys %{ "$module\::RE" }) {
                 my $re = ${"$module\::RE"}{$name};
                 $has_tests++;
-                _test_regexp_pattern($re, \%opts) or $ok = 0;
+                $Test->subtest(
+                    "pattern $name",
+                    sub {
+                        _test_regexp_pattern($re, \%opts) or $ok = 0;
+                    },
+                ) or $ok = 0;
+            }
+            unless ($has_tests) {
+                $Test->ok(1);
+                $Test->diag("No regexp patterns to test");
             }
         } # subtest
     ) or $ok = 0;
-
-    unless ($has_tests) {
-        $Test->ok(1);
-        $Test->diag("No regexp patterns to test");
-    }
 
     $ok;
 }
