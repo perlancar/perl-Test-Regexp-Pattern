@@ -11,6 +11,7 @@ use warnings;
 
 use File::Spec;
 use Test::Builder;
+use Test::More ();
 
 my $Test = Test::Builder->new;
 
