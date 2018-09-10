@@ -1,3 +1,5 @@
+## no critic: ValuesAndExpressions::ProhibitCommaSeparatedStatements BuiltinFunctions::RequireBlockMap
+
 package Test::Regexp::Pattern;
 
 # DATE
