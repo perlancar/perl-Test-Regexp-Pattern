@@ -11,64 +11,49 @@ use Getopt::Long qw(:config bundling no_ignore_case auto_help auto_version);
 use Test::Regexp::Pattern;
 
 my %opts = (
-    exclude_packages => [],
-    exclude_functions => [],
-    wrap_function => 1,
-    test_function_examples => 1,
+    #exclude_packages => [],
+    test_examples => 1,
 );
 GetOptions(
-    'exclude-package=s' => $opts{exclude_packages},
-    'exclude-function=s' => $opts{exclude_functions},
-    'W' => sub { $opts{wrap_function} = 0 },
-    'E' => sub { $opts{test_function_examples} = 0 },
+    #'exclude-package=s' => $opts{exclude_packages},
+    #'exclude-function=s' => $opts{exclude_functions},
+    'E' => sub { $opts{test_examples} = 0 },
 );
 
-metadata_in_all_modules_ok(
+regexp_patterns_in_all_modules_ok(
     \%opts,
 );
 
 1;
-# ABSTRACT: Test Rinci metadata in all dist's modules
+# ABSTRACT: Test Regexp::Pattern patterns in all modules of your distro
 # PODNAME:
 
 =head1 SYNOPSIS
 
-In your dist directory:
+In your distro directory:
 
- % test-rinci [options]
+ % test-regexp-pattern [options]
 
 
 =head1 DESCRIPTION
 
-This script is an command-line interface for L<Test::Rinci>'s
-C<metadata_in_all_modules_ok()> function.
+This script is a command-line interface for L<Test::Regexp::Pattern>'s
+C<regexp_patterns_in_all_modules_ok()> function.
 
 
 =head1 OPTIONS
 
 =over
 
-=item * --exclude-package=s
-
-Exclude a package. Can be specified multiple times.
-
-=item * --exclude-function=s
-
-Exclude a function. Can be specified multiple times.
-
 =item * -E
 
-This sets C<test_function_examples> to 0.
-
-=item * -W
-
-This sets C<wrap_function> to 0.
+This sets C<test_examples> to 0.
 
 =back
 
 
 =head1 SEE ALSO
 
-L<Test::Rinci>
+L<Test::Regexp::Pattern>
 
 =cut
