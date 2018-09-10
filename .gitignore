@@ -1,0 +1,4 @@
+Test-Regexp-Pattern-*
+.build
+*~
+nytprof*
