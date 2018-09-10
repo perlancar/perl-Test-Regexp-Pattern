@@ -51,15 +51,11 @@ sub _test_regexp_pattern {
                         return;
                     };
                     my %args;
-                    for (keys %$opts) {
-                        next unless /\A-/;
-                        $args{$_} = $opts->{$_};
-                    }
                     if ($eg->{gen_args}) {
                         $args{$_} = $eg->{gen_args}{$_} for keys %{$eg->{gen_args}};
                     }
 
-                    my $pat = re($fqname, \%args);
+                    my $pat = re($fqname, %args);
                     my $actual_match = $eg->{str} =~ $pat ? 1:0;
                     if (ref $eg->{matches} eq 'ARRAY') {
                         my $len = @{ $eg->{matches} };
