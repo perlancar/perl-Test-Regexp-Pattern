@@ -50,12 +50,16 @@ sub _test_regexp_pattern {
                         $ok = 0;
                         return;
                     };
+
                     my %args;
                     if ($eg->{gen_args}) {
                         $args{$_} = $eg->{gen_args}{$_} for keys %{$eg->{gen_args}};
                     }
-
+                    if (defined $eg->{anchor}) {
+                        $args{-anchor} = $eg->{anchor};
+                    }
                     my $pat = re($fqname, %args);
+
                     my $actual_match = $eg->{str} =~ $pat ? 1:0;
                     if (ref $eg->{matches} eq 'ARRAY') {
                         my $len = @{ $eg->{matches} };
