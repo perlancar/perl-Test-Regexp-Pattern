@@ -278,8 +278,8 @@ This module performs various checks on a module's L<Regexp::Pattern> patterns.
 It is recommended that you include something like C<release-regexp-pattern.t> in
 your distribution if you add regexp patterns to your code. If you use
 L<Dist::Zilla> to build your distribution, there is
-L<[Test::Regexp::Pattern]|Dist::Zilla::Plugin::Test::Regexp::Pattern> to make it
-easy to do so.
+L<[Regexp::Pattern]|Dist::Zilla::Plugin::Regexp::Pattern> which automatically
+adds a release test file for this during build.
 
 
 =head1 FUNCTIONS
@@ -318,6 +318,6 @@ C<regexp_patterns_in_all_modules_ok()>.
 
 L<Regexp::Pattern>
 
-L<Dist::Zilla::Plugin::Test::Regexp::Pattern>
+L<Dist::Zilla::Plugin::Regexp::Pattern>
 
 =cut
