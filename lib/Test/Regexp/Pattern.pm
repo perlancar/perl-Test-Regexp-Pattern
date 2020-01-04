@@ -259,7 +259,7 @@ sub regexp_patterns_in_all_modules_ok {
 
 To check all regexp patterns in a module:
 
- use Test::Regexp::Patterns tests=>1;
+ use Test::Regexp::Pattern;
  regexp_patterns_in_module_ok("Foo::Bar", {opt => ...}, $msg);
 
 Alternatively, you can check all regexp patterns in all modules in a distro:
