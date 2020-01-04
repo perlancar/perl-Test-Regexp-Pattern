@@ -2,15 +2,18 @@
 
 package Test::Regexp::Pattern;
 
+# AUTHORITY
 # DATE
+# DIST
 # VERSION
 
 use 5.010001;
 use strict 'subs', 'vars';
 use warnings;
 
-use Regexp::Pattern qw(re);
 use File::Spec;
+use Hash::DefHash; # exports defhash()
+use Regexp::Pattern qw(re);
 use Test::Builder;
 use Test::More ();
 
@@ -144,7 +147,8 @@ sub regexp_patterns_in_module_ok {
                 goto L1;
             }
 
-            for my $name (sort keys %{ "$module\::RE" }) {
+            my $dh = defhash(\%{ "$module\::RE" });
+            for my $name ($dh->props) {
                 my $re = ${"$module\::RE"}{$name};
                 $has_tests++;
                 $Test->subtest(
