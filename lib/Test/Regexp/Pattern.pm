@@ -287,11 +287,11 @@ Alternatively, you can check all regexp patterns in all modules in a distro:
 =head1 DESCRIPTION
 
 This module performs various checks on a module's L<Regexp::Pattern> patterns.
-It is recommended that you include something like C<release-regexp-pattern.t> in
-your distribution if you add regexp patterns to your code. If you use
-L<Dist::Zilla> to build your distribution, there is
-L<[Regexp::Pattern]|Dist::Zilla::Plugin::Regexp::Pattern> which automatically
-adds a release test file for this during build.
+It is recommended that you include something like the above
+C<release-regexp-pattern.t> in your distribution if you add regexp patterns to
+your code. If you use L<Dist::Zilla> to build your distribution, there is a
+L<[Regexp::Pattern]|Dist::Zilla::Plugin::Regexp::Pattern> plugin which
+automatically adds this release test file during build.
 
 
 =head1 FUNCTIONS
