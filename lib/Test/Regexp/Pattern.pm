@@ -31,10 +31,17 @@ sub import {
 }
 
 sub _test_regexp_pattern {
-    my ($re, $fqname, $opts) = @_;
+    my ($re, $parent, $fqname, $opts) = @_;
     my $ok = 1;
 
   GENERAL: {
+        my $dh;
+        eval { $dh = Hash::DefHash->new($re, parent=>$parent); 1 };
+        my $eval_err = $@;
+        $Test->ok(!$eval_err, "Must be a valid defhash") or do {
+            $Test->diag("error in defhash check: $eval_err");
+            $ok = 0;
+        };
         $Test->ok(($re->{pat} xor $re->{gen}), "Must declare pat OR gen but not both") or $ok = 0;
     }
 
@@ -147,14 +154,15 @@ sub regexp_patterns_in_module_ok {
                 goto L1;
             }
 
-            my $dh = defhash(\%{ "$module\::RE" });
+            my $RE = \%{ "$module\::RE" };
+            my $dh = defhash($RE);
             for my $name ($dh->props) {
-                my $re = ${"$module\::RE"}{$name};
+                my $re = $RE->{$name};
                 $has_tests++;
                 $Test->subtest(
                     "pattern $prefix$name",
                     sub {
-                        _test_regexp_pattern($re, "$prefix$name", \%opts) or $ok = 0;
+                        _test_regexp_pattern($re, $RE, "$prefix$name", \%opts) or $ok = 0;
                     },
                 ) or $ok = 0;
             }
