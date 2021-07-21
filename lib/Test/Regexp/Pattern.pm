@@ -54,7 +54,9 @@ sub _test_regexp_pattern {
             $Test->subtest(
                 "example #$i" .
                     ($eg->{name} ? " ($eg->{name})" :
-                     ($eg->{summary} ? " ($eg->{summary})" : "")),
+                     ($eg->{summary} ? " ($eg->{summary})" :
+                      (defined $eg->{str} ? " (str $eg->{str})" :
+                       ""))),
                 sub {
                     $Test->ok(defined($eg->{str}), 'example provides string to match') or do {
                         $ok = 0;
