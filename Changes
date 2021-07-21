@@ -1,3 +1,8 @@
+0.009   2021-07-21  Released-By: PERLANCAR; Urgency: medium
+
+	- [ux] Show string from example as subtest name.
+
+
 0.008   2021-07-13  Released-By: PERLANCAR; Urgency: low
 
 	- No functional changes.
