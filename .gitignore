@@ -2,3 +2,4 @@ Test-Regexp-Pattern-*
 .build
 *~
 nytprof*
+.DS_Store
