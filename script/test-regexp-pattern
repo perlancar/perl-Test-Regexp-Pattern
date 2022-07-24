@@ -1,14 +1,16 @@
 #!perl
 
-# DATE
-# VERSION
-
 use 5.010;
 use strict;
 use warnings;
 
 use Getopt::Long qw(:config bundling no_ignore_case auto_help auto_version);
 use Test::Regexp::Pattern;
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
 
 my %opts = (
     #exclude_packages => [],
