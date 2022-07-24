@@ -172,7 +172,7 @@ sub regexp_patterns_in_module_ok {
           L1:
             unless ($has_tests) {
                 $Test->ok(1);
-                $Test->diag("No regexp patterns to test");
+                $Test->diag("No regexp patterns to test in $modulepm");
             }
         } # subtest
     ) or $ok = 0;
